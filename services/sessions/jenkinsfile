@@ -75,7 +75,7 @@ pipeline {
      sed -i "s|IMAGE_TAG|$IMAGE_TAG|g" k8s/deployments/${SERVICE_NAME}.yaml
 
      kubectl apply -f k8s/deployments/${SERVICE_NAME}.yaml
-     kubectl apply -f k8s/services/${SERVICE_NAME}.yaml
+     kubectl apply -f k8s/services/${SERVICE_NAME}-service.yaml
      """
 
     }
