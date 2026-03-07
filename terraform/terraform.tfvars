@@ -26,3 +26,9 @@ node_instance_type = ["m7i-flex.large"]
 node_desired_size = 2
 node_min_size     = 1
 node_max_size     = 3
+
+
+cluster_role_name = "microservices-cluster-role"
+node_role_name    = "microservices-node-role"
+
+jenkins_user_arn = "arn:aws:iam::900253478849:user/jenkins"
