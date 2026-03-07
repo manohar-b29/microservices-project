@@ -21,11 +21,10 @@ module "eks_cluster" {
       max_size     = var.node_max_size
 
       instance_types = var.node_instance_type
-
-      capacity_type = "ON_DEMAND"
+      capacity_type  = "ON_DEMAND"
 
       iam_role_arn = var.node_role_arn
     }
   }
-
 }
+
