@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meeting
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: meeting
+  template:
+    metadata:
+      labels:
+        app: meeting
+    spec:
+      containers:
+      - name: meeting
+        image: <ECR>/meeting:latest
+        ports:
+        - containerPort: 3000

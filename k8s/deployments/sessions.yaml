@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sessions
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sessions
+  template:
+    metadata:
+      labels:
+        app: sessions
+    spec:
+      containers:
+      - name: sessions
+        image: <ECR>/sessions:latest
+        ports:
+        - containerPort: 3000

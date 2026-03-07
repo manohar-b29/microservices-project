@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aahar
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aahar
+  template:
+    metadata:
+      labels:
+        app: aahar
+    spec:
+      containers:
+      - name: aahar
+        image: <ECR>/aahar:latest
+        ports:
+        - containerPort: 3000
