@@ -1,22 +1,13 @@
-variable "region" {}
-
 variable "cluster_name" {}
 
-variable "vpc_name" {}
-
-variable "vpc_cidr" {}
-
-variable "availability_zones" {
-  type = list(string)
-}
-
-variable "public_subnets" {
-  type = list(string)
-}
+variable "vpc_id" {}
 
 variable "private_subnets" {
   type = list(string)
 }
+
+variable "cluster_role_arn" {}
+variable "node_role_arn" {}
 
 variable "node_instance_type" {
   type = list(string)

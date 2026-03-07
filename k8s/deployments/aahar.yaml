@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: aahar
-        image: <ECR>/aahar:latest
+        image: ECR_REGISTRY/aahar:IMAGE_TAG
         ports:
         - containerPort: 3000

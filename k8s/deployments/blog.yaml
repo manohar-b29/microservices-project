@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: blog
-        image: <ECR>/blog:latest
+        image: ECR_REGISTRY/blog:IMAGE_TAG
         ports:
         - containerPort: 3000

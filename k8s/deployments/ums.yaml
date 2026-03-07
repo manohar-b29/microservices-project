@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: ums
-        image: <ECR>/ums:latest
+        image: ECR_REGISTRY/ums:IMAGE_TAG
         ports:
         - containerPort: 3000

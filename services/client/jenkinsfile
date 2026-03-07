@@ -1,0 +1,87 @@
+pipeline {
+ agent any
+
+ environment {
+  SERVICE_NAME = "client"
+  AWS_REGION = "ap-south-1"
+  IMAGE_TAG = "${BUILD_NUMBER}"
+ }
+
+ stages {
+
+  stage('Checkout'){
+   steps{
+    git branch: 'master',
+    credentialsId: 'github-creds',
+    url: 'https://github.com/manohar-b29/microservices-project.git'
+   }
+  }
+
+  stage('Configure AWS'){
+   steps{
+    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+    credentialsId: 'aws-creds']]) {
+
+     script {
+
+      env.AWS_ACCOUNT_ID = sh(
+       script: "aws sts get-caller-identity --query Account --output text",
+       returnStdout: true
+      ).trim()
+
+      env.ECR_REGISTRY = "${env.AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+
+     }
+    }
+   }
+  }
+
+  stage('Login to ECR'){
+   steps{
+    sh """
+    aws ecr get-login-password --region ${AWS_REGION} |
+    docker login --username AWS --password-stdin $ECR_REGISTRY
+    """
+   }
+  }
+
+  stage('Build Image'){
+   steps{
+    sh """
+    docker build -t ${SERVICE_NAME}:${IMAGE_TAG} services/${SERVICE_NAME}
+    docker tag ${SERVICE_NAME}:${IMAGE_TAG} $ECR_REGISTRY/${SERVICE_NAME}:${IMAGE_TAG}
+    """
+   }
+  }
+
+  stage('Push Image'){
+   steps{
+    sh """
+    docker push $ECR_REGISTRY/${SERVICE_NAME}:${IMAGE_TAG}
+    """
+   }
+  }
+
+  stage('Deploy to EKS'){
+   steps{
+
+    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+    credentialsId: 'aws-creds']]) {
+
+     sh """
+     aws eks update-kubeconfig --region ${AWS_REGION} --name microservices-eks
+
+     sed -i "s|ECR_REGISTRY|$ECR_REGISTRY|g" k8s/deployments/${SERVICE_NAME}.yaml
+     sed -i "s|IMAGE_TAG|$IMAGE_TAG|g" k8s/deployments/${SERVICE_NAME}.yaml
+
+     kubectl apply -f k8s/deployments/${SERVICE_NAME}.yaml
+     kubectl apply -f k8s/services/${SERVICE_NAME}.yaml
+     """
+
+    }
+
+   }
+  }
+
+ }
+}
