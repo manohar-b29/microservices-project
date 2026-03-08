@@ -5,6 +5,10 @@ app.get("/notification", (req, res) => {
   res.send("notification service is running 🚀");
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 app.listen(3000, () => {
   console.log("notification service running on port 3000");
 });

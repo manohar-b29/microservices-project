@@ -62,19 +62,3 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
-############################
-# AWS AUTH (JENKINS ACCESS)
-############################
-
-module "aws_auth" {
-
-  source = "./modules/aws-auth"
-
-  cluster_name     = module.eks.cluster_name
-  node_role_arn    = module.iam.node_role_arn
-  jenkins_user_arn = var.jenkins_user_arn
-
-  depends_on = [
-    module.eks
-  ]
-}

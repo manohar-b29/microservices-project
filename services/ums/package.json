@@ -1,6 +1,7 @@
 {
   "name": "ums-service",
   "version": "1.0.0",
+  "description": "User Management Service",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

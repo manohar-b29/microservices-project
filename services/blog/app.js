@@ -5,6 +5,10 @@ app.get("/blog", (req, res) => {
   res.send("blog service is running 🚀");
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 app.listen(3000, () => {
   console.log("blog service running on port 3000");
 });

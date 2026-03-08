@@ -1,10 +1,22 @@
-async function loadDashboard(){
+const express = require("express");
+const path = require("path");
 
- const response = await fetch("http://localhost:3000/dashboard");
+const app = express();
+const PORT = 3000;
 
- const data = await response.json();
+/* Health endpoint for ALB */
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 
- document.getElementById("output").innerText =
- JSON.stringify(data,null,2);
+/* Serve static files */
+app.use(express.static(__dirname));
 
-}
+/* Root route */
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.listen(PORT, () => {
+  console.log(`Client running on port ${PORT}`);
+});
