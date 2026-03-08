@@ -1,19 +1,38 @@
 const express = require("express");
-const axios = require("axios");
-
 const app = express();
 
-app.get("/dashboard", async (req,res)=>{
+app.use(express.json());
 
- const meeting = await axios.get("http://meeting-service:3000/meetings");
-
- res.json({
-   message:"UMS service",
-   meeting:meeting.data
- });
-
+// root
+app.get("/", (req, res) => {
+  res.send("UMS Service Running 🚀");
 });
 
-app.listen(3000,()=>{
- console.log("UMS service running");
+// ingress route
+app.get("/ums", (req, res) => {
+  res.json({
+    service: "UMS",
+    message: "User Management Service working",
+  });
+});
+
+// example API
+app.get("/ums/users", (req, res) => {
+  const users = [
+    { id: 1, name: "Manohar", role: "Admin" },
+    { id: 2, name: "DevOpsUser", role: "Developer" }
+  ];
+
+  res.json(users);
+});
+
+// health check
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
+const PORT = 3000;
+
+app.listen(PORT, () => {
+  console.log(`UMS service running on port ${PORT}`);
 });
