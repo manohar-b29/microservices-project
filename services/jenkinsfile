@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'master',
+                credentialsId: 'github-creds',
+                url: 'https://github.com/manohar-b29/microservices-project.git'  
+            }
+        }
+
+        stage('Detect Changed Services') {
+            steps {
+                script {
+
+                    def changedFiles = sh(
+                        script: "git diff --name-only HEAD~1 HEAD",
+                        returnStdout: true
+                    ).trim().split("\n")
+
+                    def services = [
+                        'aahar',
+                        'blog',
+                        'analytics',
+                        'ums',
+                        'meeting',
+                        'notification',
+                        'polls',
+                        'sessions',
+                        'client'
+                    ]
+
+                    def changedServices = []
+
+                    for (file in changedFiles) {
+                        for (svc in services) {
+                            if (file.startsWith("services/${svc}/")) {
+                                changedServices.add(svc)
+                            }
+                        }
+                    }
+
+                    changedServices = changedServices.unique()
+
+                    echo "Changed services: ${changedServices}"
+
+                    for (svc in changedServices) {
+                        build job: "pipeline-${svc}"
+                    }
+
+                }
+            }
+        }
+
+    }
+}
