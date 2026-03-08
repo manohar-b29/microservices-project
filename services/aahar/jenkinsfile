@@ -82,6 +82,27 @@ pipeline {
 
    }
   }
+stage('Cleanup Old Images') {
+    steps {
+        script {
+            sh '''
+            SERVICE=aahar
 
+            echo "Keeping latest image for $SERVICE..."
+
+            IMAGES=$(docker images --format "{{.Repository}} {{.ID}}" | grep $SERVICE | awk '{print $2}')
+
+            KEEP=$(echo "$IMAGES" | head -n 1)
+
+            for img in $IMAGES
+            do
+                if [ "$img" != "$KEEP" ]; then
+                    docker rmi -f $img || true
+                fi
+            done
+            '''
+        }
+    }
+}
  }
 }
