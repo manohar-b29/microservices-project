@@ -5,13 +5,20 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-
+    alb.ingress.kubernetes.io/healthcheck-path: /meeting
 spec:
   ingressClassName: alb
-
   rules:
   - http:
       paths:
+
+      - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: client-service
+            port:
+              number: 80
 
       - path: /meeting
         pathType: Prefix
