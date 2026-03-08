@@ -82,26 +82,6 @@ pipeline {
 
    }
   }
-stage('Cleanup Old Images') {
-    steps {
-        script {
-            sh '''
-            SERVICE=${SERVICE_NAME}
 
-            echo "Cleaning images for $SERVICE"
-
-            # Remove local tags like aahar:9
-            docker images | grep "^$SERVICE " | awk '{print $3}' | xargs -r docker rmi -f
-
-            # Keep only latest ECR image
-            docker images ${ECR_REGISTRY}/$SERVICE \
-            --format "{{.Repository}}:{{.Tag}} {{.ID}}" \
-            | tail -n +2 \
-            | awk '{print $2}' \
-            | xargs -r docker rmi -f
-            '''
-        }
-    }
-}
  }
 }
