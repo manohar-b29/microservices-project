@@ -102,7 +102,8 @@ stage('Cleanup Old Images') {
             '''
         }
     }
-}stage('Cleanup Old Images') {
+}
+stage('Cleanup Old Images') {
     steps {
         script {
             sh '''
