@@ -86,20 +86,19 @@ stage('Cleanup Old Images') {
     steps {
         script {
             sh '''
-            SERVICE=aahar
+            SERVICE=${SERVICE_NAME}
 
-            echo "Keeping latest image for $SERVICE..."
+            echo "Cleaning images for $SERVICE"
 
-            IMAGES=$(docker images --format "{{.Repository}} {{.ID}}" | grep $SERVICE | awk '{print $2}')
+            # Remove local tags like aahar:9
+            docker images | grep "^$SERVICE " | awk '{print $3}' | xargs -r docker rmi -f
 
-            KEEP=$(echo "$IMAGES" | head -n 1)
-
-            for img in $IMAGES
-            do
-                if [ "$img" != "$KEEP" ]; then
-                    docker rmi -f $img || true
-                fi
-            done
+            # Keep only latest ECR image
+            docker images ${ECR_REGISTRY}/$SERVICE \
+            --format "{{.Repository}}:{{.Tag}} {{.ID}}" \
+            | tail -n +2 \
+            | awk '{print $2}' \
+            | xargs -r docker rmi -f
             '''
         }
     }
